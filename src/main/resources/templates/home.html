@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Manager</title>
+</head>
+<body>
+<div>
+    <div class="row border rounded">
+        <th:block th:each="doc : ${documentList}">
+            <div class="col">
+                <div>
+                    <a th:href="@{'/downloadFile/'+${doc.id}}">[[${doc.docName}]]</a>
+                </div>
+
+            </div>
+        </th:block>
+    </div>
+    <form id="uploadFiles" name ="uploadFiles" th:action="@{/uploadFiles}" method="post" enctype="multipart/form-data">
+        <div>
+            <h2>Upload Files:</h2>
+            <p>
+                <input type="file" name="files" multiple required />
+            </p>
+            <p>
+                <input type="submit" th:value="Upload" class="btn btn-primary" />
+            </p>
+        </div>
+    </form>
+
+
+</div>
+
+</body>
+</html>
