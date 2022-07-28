@@ -4,10 +4,12 @@ import com.example.uplaoddownloaddoc.entities.Document;
 import com.example.uplaoddownloaddoc.repositories.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,8 +23,9 @@ public class DocumentService {
     }
 
     public Document saveFile(MultipartFile file){
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try{
-            Document document = new Document(file.getName(), file.getContentType(),file.getBytes());
+            Document document = new Document(fileName, file.getContentType(),file.getBytes());
             return documentRepository.save(document);
         }catch (Exception e){
             e.printStackTrace();

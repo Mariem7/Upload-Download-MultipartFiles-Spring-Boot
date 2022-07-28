@@ -4,7 +4,6 @@ import com.example.uplaoddownloaddoc.entities.Document;
 import com.example.uplaoddownloaddoc.services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -43,6 +45,7 @@ public class DocumentController {
         return "redirect:/";
     }
 
+    /*
     @GetMapping("/downloadFile/{id}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable Integer id){
         Document document = documentService.getFile(id).get();
@@ -51,6 +54,18 @@ public class DocumentController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment:filename=\""+document.getDocName()+"\"")
                 .body(new ByteArrayResource(document.getFile()));
 
+    }
+    */
+    @GetMapping("/downloadFile/{id}")
+    public void downloadFile(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        Document document = documentService.getFile(id).get();
+        response.setContentType(String.valueOf(MediaType.parseMediaType(document.getDocType())));
+        String headerKey = HttpHeaders.CONTENT_DISPOSITION;
+        String headerValue = "attachment; filename=\"" +document.getDocName() +"\"";
+        response.setHeader(headerKey,headerValue);
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(document.getFile());
+        outputStream.close();
     }
 
 }
